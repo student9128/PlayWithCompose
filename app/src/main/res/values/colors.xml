@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="immersive_sys_ui">#FFF1EFEF</color>
     <color name="nav_bar">#33000000</color>
+    <color name="splash_background_color">#FFF1EFEF</color>
 </resources>
