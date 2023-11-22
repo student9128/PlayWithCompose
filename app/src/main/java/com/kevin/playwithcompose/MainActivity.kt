@@ -1,5 +1,6 @@
 package com.kevin.playwithcompose
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -8,26 +9,24 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Indication
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,9 +38,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
@@ -54,41 +55,57 @@ import androidx.navigation.compose.rememberNavController
 import com.kevin.playwithcompose.ui.theme.PlayWithComposeTheme
 import com.kevin.playwithcompose.ui.theme.backgroundLight
 import com.kevin.playwithcompose.ui.theme.mainColor
-
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
+//        window.setFlags(
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+//        )
         setContent {
+            val bottom = WindowInsets.navigationBars.getBottom(LocalDensity.current)
+            val top = WindowInsets.statusBars.getTop(Density(this))
+            val density = LocalDensity.current.density
+            Log.d("MainActivity","top======${top/density},bottom=${bottom/density}")
             PlayWithComposeTheme {
                 val navController = rememberNavController()
                 val currentBackStack by navController.currentBackStackEntryAsState()
                 val destination = currentBackStack?.destination
                 val currentScreen = tabScreens.find { it.route == destination?.route } ?: Home
-
-                Scaffold(bottomBar = {
-                    PlayTabs(
-                        allScreens = tabScreens,
-                        currentScreen = currentScreen,
-                        onTabSelected = { newScreen ->
-                            navController.navigate(route = newScreen.route) {
-                                print("zou le ma")
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                Scaffold(
+                    bottomBar = {
+                        PlayTabs(
+                            allScreens = tabScreens,
+                            currentScreen = currentScreen,
+                            onTabSelected = { newScreen ->
+                                navController.navigate(route = newScreen.route) {
+                                    print("zou le ma")
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                            if(newScreen.route==Project.route){
-                                window.statusBarColor = backgroundLight.toArgb()
-                            }else{
-                                window.statusBarColor = mainColor.toArgb()
-                            }
-                        })
-                }) { innerPadding ->
+                                if (newScreen.route == Project.route) {
+                                    window.statusBarColor = backgroundLight.toArgb()
+                                } else if (newScreen.route == Me.route) {
+                                    window.statusBarColor = Color.Transparent.toArgb() // 设置StatusBarColor为透明
+                                } else {
+                                    window.statusBarColor = mainColor.toArgb()
+                                }
+                            })
+                    }) { innerPadding ->
                     PlayNavHost(
+                        context = this@MainActivity,
                         navController = navController,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(
+                            start = innerPadding.calculateLeftPadding(LayoutDirection.Ltr),
+                            top = 0.dp,
+                            end = innerPadding.calculateLeftPadding(LayoutDirection.Ltr),
+                            bottom = innerPadding.calculateBottomPadding()
+                        )
                     )
                 }
             }
@@ -102,13 +119,21 @@ fun PlayTabs(
     onTabSelected: (PlayDestinations) -> Unit,
     currentScreen: PlayDestinations
 ) {
+    val bottom = WindowInsets.navigationBars.getBottom(LocalDensity.current)
+    val density = LocalDensity.current.density
+    Log.d("MainActivity","top======,bottom=${bottom/density}")
     Surface(
         color = Color(0xFFF1EFEF),
         modifier = Modifier
-            .height(56.dp)
+            .height((56+bottom/density).dp)
             .fillMaxWidth()
+            .navigationBarsPadding()
     ) {
-        Row(Modifier.selectableGroup(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.selectableGroup(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             allScreens.forEach { screen ->
                 PlayTab(
                     screen = screen,
@@ -151,7 +176,7 @@ fun PlayTab(screen: PlayDestinations, onTabSelected: () -> Unit, selected: Boole
                 onClick = onTabSelected,
                 role = Role.Tab,
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(bounded = false, radius = tabWidth/2)
+                indication = rememberRipple(bounded = false, radius = tabWidth / 2)
             )
     ) {
         Icon(imageVector = screen.icon, contentDescription = screen.route, tint = tabColor)
@@ -162,7 +187,7 @@ fun PlayTab(screen: PlayDestinations, onTabSelected: () -> Unit, selected: Boole
 
 
 @Composable
-fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
+fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier,context:Context) {
     NavHost(navController = navController, modifier = modifier, startDestination = Home.route) {
         composable(route = Home.route) {
             HomeScreen()
@@ -171,10 +196,17 @@ fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier)
             ProjectScreen()
         }
         composable(route = Menu.route) {
-            MenuScreen()
+            MenuScreen(context)
         }
         composable(route = Me.route) {
             MeScreen()
         }
+    }
+}
+
+@Composable
+fun MeScreenX() {
+    Column {
+        Text(text = "MeScreen")
     }
 }
