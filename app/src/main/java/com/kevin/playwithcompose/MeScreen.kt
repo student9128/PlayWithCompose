@@ -1,8 +1,11 @@
 package com.kevin.playwithcompose
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -41,7 +45,7 @@ import com.kevin.playwithcompose.ui.theme.onMainColor
 import com.kevin.playwithcompose.ui.theme.primaryLight
 
 @Composable
-fun MeScreen() {
+fun MeScreen(context: Context = LocalContext.current.applicationContext) {
     Column {
 //        Box(modifier = Modifier
 //            .fillMaxWidth()
@@ -115,13 +119,29 @@ fun MeScreen() {
 //                        .background(Color.Green.copy(alpha = 0.5f))
 
                 )
-                LazyColumn(contentPadding = PaddingValues(16.dp), modifier = Modifier.padding(top = 16.dp)) {
+                LazyColumn(
+                    contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
                     items(count = 10) { index ->
-                        Row(Modifier.fillMaxWidth().padding(vertical = 16.dp)) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    Toast
+                                        .makeText(context, "点击了$index", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                                .padding(vertical = 16.dp, horizontal = 16.dp)
+                               ) {
                             Image(
                                 imageVector = Icons.Filled.AccountCircle,
                                 contentDescription = null,
-                                colorFilter = ColorFilter.tint(color = if(index%2==0)Color.Red.copy(alpha = 0.5f) else primaryLight)
+                                colorFilter = ColorFilter.tint(
+                                    color = if (index % 2 == 0) Color.Red.copy(
+                                        alpha = 0.5f
+                                    ) else primaryLight
+                                )
                             )
                             Text(text = "index = $index")
                         }
