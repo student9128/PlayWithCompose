@@ -1,8 +1,6 @@
 package com.kevin.playwithcompose
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,10 +10,10 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -25,9 +23,12 @@ import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.lerp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import kotlinx.coroutines.flow.distinctUntilChanged
+import com.kevin.composestudy.bean.BannerData
+import com.kevin.playwithcompose.util.LogUtils.printD
+import com.kevin.playwithcompose.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 import java.util.Timer
 import java.util.TimerTask
@@ -42,9 +43,12 @@ fun HomeScreen() {
     val image3 = "https://lmg.jj20.com/up/allimg/1111/04131Q42551/1P413142551-4-1200.jpg"
     val image4 =
         "https://ss1.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/500fd9f9d72a6059b4256d352e34349b033bbaec.jpg"
-    val pagerList = listOf(image4, image1, image2, image3, image4, image1)
+    val viewModel: HomeViewModel = viewModel()
+    val pagerList: List<BannerData> by viewModel.bannerData
+//    val pagerList = listOf(image4, image1, image2, image3, image4, image1)
     Scaffold(topBar = { AppBar(title = "Home") }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
+            printD("value=======${pagerList}")
             val pagerState = rememberPagerState(
                 initialPage = 1,
                 initialPageOffsetFraction = 0f
@@ -97,7 +101,7 @@ fun HomeScreen() {
                     }) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(pagerList[index])
+                            .data(pagerList[index].imagePath)
                             .crossfade(true)
                             .build(),
 //                model = image4,

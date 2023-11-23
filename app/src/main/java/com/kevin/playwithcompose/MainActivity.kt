@@ -1,6 +1,7 @@
 package com.kevin.playwithcompose
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -52,10 +53,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.kevin.playwithcompose.base.BaseActivity
 import com.kevin.playwithcompose.ui.theme.PlayWithComposeTheme
 import com.kevin.playwithcompose.ui.theme.backgroundLight
 import com.kevin.playwithcompose.ui.theme.mainColor
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
