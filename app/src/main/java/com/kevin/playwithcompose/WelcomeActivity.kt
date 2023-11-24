@@ -1,6 +1,8 @@
 package com.kevin.playwithcompose
 
+import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,7 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class WelcomeActivity : ComponentActivity() {
+open class WelcomeActivity : ComponentActivity() {
     private val viewModel: WelcomeVideModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -53,7 +55,8 @@ class WelcomeActivity : ComponentActivity() {
         Image(
             painter = painterResource(R.drawable.ic_splash),
             contentDescription = "splash",
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .fillMaxHeight(),
             contentScale = ContentScale.Crop
         )
