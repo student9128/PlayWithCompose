@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
@@ -130,6 +131,7 @@ fun PlayTabs(
             .height((56+bottom/density).dp)
             .fillMaxWidth()
             .navigationBarsPadding()
+//            .blur(radiusX = 1.dp, radiusY = 1.dp)
     ) {
         Row(
             Modifier.selectableGroup(),

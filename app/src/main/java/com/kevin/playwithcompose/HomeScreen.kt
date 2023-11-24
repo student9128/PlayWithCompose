@@ -45,6 +45,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -218,15 +220,20 @@ fun HomeScreen(context: Context = LocalContext.current.applicationContext) {
                     val articleData = articleList!!.datas[index]
                     val decodedText =
                         Html.fromHtml(articleData.title, Html.FROM_HTML_MODE_LEGACY).toString()
-                    Card(modifier = Modifier
-                        .padding(top = 16.dp, start = 10.dp, end = 10.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(CornerSize(10.dp)))
-                        .clickable() {
-                            Toast
-                                .makeText(context, "$index", Toast.LENGTH_SHORT)
-                                .show()
-                        }) {
+                    Card(
+                        modifier = Modifier
+                            .padding(top = 16.dp, start = 10.dp, end = 10.dp)
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(CornerSize(10.dp)))
+                            .clickable() {
+                                Toast
+                                    .makeText(context, "$index", Toast.LENGTH_SHORT)
+                                    .show()
+                            },
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (articleData.author.isEmpty()) Color(0xffEBF3E8) else Color(0xffF4EEEE)
+                        )
+                    ) {
                         Column(modifier = Modifier.padding(10.dp)) {
 
                             Text(
