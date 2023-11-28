@@ -48,6 +48,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -231,7 +232,9 @@ fun HomeScreen(context: Context = LocalContext.current.applicationContext) {
                                     .show()
                             },
                         colors = CardDefaults.cardColors(
-                            containerColor = if (articleData.author.isEmpty()) Color(0xffEBF3E8) else Color(0xffF4EEEE)
+                            containerColor = if (articleData.author.isEmpty()) Color(0xffEBF3E8) else Color(
+                                0xffF4EEEE
+                            )
                         )
                     ) {
                         Column(modifier = Modifier.padding(10.dp)) {
@@ -291,16 +294,17 @@ fun HomeScreen(context: Context = LocalContext.current.applicationContext) {
                 }
 
             }
+
             AnimatedVisibility(
                 visible = showScrollToTop,
 //                enter = fadeIn(animationSpec = tween(durationMillis = 100)),
 //                exit = fadeOut(animationSpec = tween(durationMillis = 100)),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(bottom = 20.dp, end = 10.dp)
+//                    .padding(bottom = 20.dp, end = 10.dp)
 //                    .clip(CircleShape)
             ) {
-                Button(
+                FloatingActionButton(
                     onClick = {
                         coroutineScope.launch {
                             if (listState.firstVisibleItemIndex > 10) {
@@ -308,19 +312,11 @@ fun HomeScreen(context: Context = LocalContext.current.applicationContext) {
                             }
                             listState.animateScrollToItem(0)
                         }
-                    },
-                    modifier = Modifier
-                        .size(50.dp),
-                    colors = ButtonDefaults.buttonColors(mainColor),
-                    shape = CircleShape,
-                    contentPadding = PaddingValues(0.dp),
-//                    elevation = ButtonDefaults.buttonElevation(
-//                        defaultElevation = 10.dp,
-//                        pressedElevation = 15.dp,
-//                        disabledElevation = 0.dp,
-//                        hoveredElevation = 15.dp,
-//                        focusedElevation = 10.dp
-//                    )
+                    }, containerColor = mainColor, modifier = Modifier
+                        .size(70.dp)
+                        .align(Alignment.BottomEnd)
+                        .padding(bottom = 20.dp, end = 10.dp, start = 10.dp)
+//                        .clip(CircleShape)
                 ) {
                     Icon(
                         Icons.Filled.ArrowForward,
@@ -333,6 +329,41 @@ fun HomeScreen(context: Context = LocalContext.current.applicationContext) {
                             }
                     )
                 }
+//                Button(
+//                    onClick = {
+//                        coroutineScope.launch {
+//                            if (listState.firstVisibleItemIndex > 10) {
+//                                listState.scrollToItem(10)
+//                            }
+//                            listState.animateScrollToItem(0)
+//                        }
+//                    },
+//                    modifier = Modifier
+//                        .size(50.dp)
+//                        .clip(CircleShape),
+//                    colors = ButtonDefaults.buttonColors(mainColor),
+//                    shape = CircleShape,
+//                    contentPadding = PaddingValues(0.dp)
+//
+////                    elevation = ButtonDefaults.buttonElevation(
+////                        defaultElevation = 10.dp,
+////                        pressedElevation = 15.dp,
+////                        disabledElevation = 0.dp,
+////                        hoveredElevation = 15.dp,
+////                        focusedElevation = 10.dp
+////                    )
+//                ) {
+//                    Icon(
+//                        Icons.Filled.ArrowForward,
+//                        contentDescription = null,
+//                        tint = primaryLight,
+//                        modifier = Modifier
+//                            .size(30.dp)
+//                            .graphicsLayer {
+//                                rotationZ = -90f
+//                            }
+//                    )
+//                }
             }
 
 
