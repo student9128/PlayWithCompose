@@ -1,6 +1,12 @@
 package com.kevin.playwithcompose.navigation
 
 import android.content.Context
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.currentComposer
 import androidx.compose.ui.Modifier
@@ -20,20 +26,48 @@ import com.kevin.playwithcompose.UsbCheckPage
 
 @Composable
 fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier, context: Context) {
-    NavHost(navController = navController, modifier = modifier, startDestination = Home.route) {
-        composable(route = Home.route) {
+    NavHost(
+        navController = navController,
+        modifier = modifier,
+        startDestination = Home.route,
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Start,
+                tween(500)
+            )
+        }, exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.End,
+                tween(500)
+            )
+        }) {
+        composable(
+            route = Home.route,
+            enterTransition = { fadeIn(animationSpec = tween(500)) },
+            exitTransition = { fadeOut(animationSpec = tween(500)) },
+            popEnterTransition = { fadeIn(animationSpec = tween(500)) },
+            popExitTransition = { fadeOut(animationSpec = tween(500)) }) {
             HomeScreen()
         }
-        composable(route = Project.route) {
+        composable(route = Project.route, enterTransition = { fadeIn(animationSpec = tween(500)) },
+            exitTransition = { fadeOut(animationSpec = tween(500)) },
+            popEnterTransition = { fadeIn(animationSpec = tween(500)) },
+            popExitTransition = { fadeOut(animationSpec = tween(500)) }) {
             ProjectScreen()
         }
-        composable(route = Menu.route) {
+        composable(route = Menu.route, enterTransition = { fadeIn(animationSpec = tween(700)) },
+            exitTransition = { fadeOut(animationSpec = tween(700)) },
+            popEnterTransition = { fadeIn(animationSpec = tween(700)) },
+            popExitTransition = { fadeOut(animationSpec = tween(700)) }) {
             MenuScreen(context)
         }
-        composable(route = Me.route) {
+        composable(route = Me.route, enterTransition = { fadeIn(animationSpec = tween(500)) },
+            exitTransition = { fadeOut(animationSpec = tween(500)) },
+            popEnterTransition = { fadeIn(animationSpec = tween(500)) },
+            popExitTransition = { fadeOut(animationSpec = tween(500)) }) {
             MeScreen(navHostController = navController)
         }
-        composable(route=Route.USB_CHECK){
+        composable(route = Route.USB_CHECK) {
             UsbCheckPage(navHostController = navController)
         }
     }

@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -69,8 +70,8 @@ fun MenuScreen(context: Context) {
     val viewModel = MenuViewModel()
     val navListData: List<NavListData> by viewModel.navTitleListData
 
-
-    Column(modifier = Modifier.padding(top = (top / density).dp)) {
+Scaffold {innerPadding->
+    Column(modifier = Modifier.padding(innerPadding)) {
         SearchBar()
         Row {
             var selectedIndex by remember {
@@ -169,6 +170,9 @@ fun MenuScreen(context: Context) {
 
 }
 
+
+}
+
 fun generateColor(): Color {
     val random = Random(Random.nextLong())
     val color = listOf(
@@ -208,7 +212,7 @@ private fun SearchBar() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(24.dp))
                 .background(backgroundLight)
                 .padding(start = 10.dp, top = 5.dp, bottom = 5.dp, end = 10.dp)
         ) {
