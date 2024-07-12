@@ -46,3 +46,7 @@ object Me : PlayDestinations {
 
 }
 val tabScreens = listOf(Home,Project,Menu,Me)
+
+object Route{
+    const val USB_CHECK = "usb_check"
+}

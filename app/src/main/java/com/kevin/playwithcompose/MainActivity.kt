@@ -55,6 +55,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kevin.playwithcompose.base.BaseActivity
+import com.kevin.playwithcompose.navigation.PlayNavHost
 import com.kevin.playwithcompose.ui.theme.PlayWithComposeTheme
 import com.kevin.playwithcompose.ui.theme.backgroundLight
 import com.kevin.playwithcompose.ui.theme.mainColor
@@ -189,24 +190,6 @@ fun PlayTab(screen: PlayDestinations, onTabSelected: () -> Unit, selected: Boole
     }
 }
 
-
-@Composable
-fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier,context:Context) {
-    NavHost(navController = navController, modifier = modifier, startDestination = Home.route) {
-        composable(route = Home.route) {
-            HomeScreen()
-        }
-        composable(route = Project.route) {
-            ProjectScreen()
-        }
-        composable(route = Menu.route) {
-            MenuScreen(context)
-        }
-        composable(route = Me.route) {
-            MeScreen()
-        }
-    }
-}
 
 @Composable
 fun MeScreenX() {

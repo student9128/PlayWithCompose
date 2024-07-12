@@ -3,6 +3,7 @@ package com.kevin.playwithcompose
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
+import android.widget.Button
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,13 +45,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.kevin.playwithcompose.ui.theme.mainColor
 import com.kevin.playwithcompose.ui.theme.onMainColor
 import com.kevin.playwithcompose.ui.theme.primaryLight
 import kotlinx.coroutines.launch
 
 @Composable
-fun MeScreen(context: Context = LocalContext.current.applicationContext) {
+fun MeScreen(context: Context = LocalContext.current.applicationContext, navHostController: NavHostController,) {
     val coroutineScope = rememberCoroutineScope()
     Column {
 //        Box(modifier = Modifier
@@ -124,6 +127,9 @@ fun MeScreen(context: Context = LocalContext.current.applicationContext) {
 //                        .background(Color.Green.copy(alpha = 0.5f))
 
                 )
+                Button(onClick = { navHostController.navigate(Route.USB_CHECK) }) {
+                    Text(text = "检测手机是否连接usb")
+                }
                 LazyColumn(
                     contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
                     modifier = Modifier.padding(top = 16.dp)
@@ -136,83 +142,83 @@ fun MeScreen(context: Context = LocalContext.current.applicationContext) {
                                     coroutineScope.launch {
                                         //welcomeActivity的launchMode设置为singleStance点击更换图标不会退出app
                                         val packageManager = context.packageManager
-                                    if(index==0){
-                                        packageManager.setComponentEnabledSetting(
-                                            ComponentName(
-                                                "com.kevin.playwithcompose",
-                                                "com.kevin.playwithcompose.WelcomePinkActivity"
-                                            ),
-                                            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                                            PackageManager.DONT_KILL_APP
-                                        )
-                                        packageManager.setComponentEnabledSetting(
-                                            ComponentName(
-                                                "com.kevin.playwithcompose",
-                                                "com.kevin.playwithcompose.WelcomeActivity"
-                                            ),
-                                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                            PackageManager.DONT_KILL_APP
-                                        )
-                                        packageManager.setComponentEnabledSetting(
-                                            ComponentName(
-                                                "com.kevin.playwithcompose",
-                                                "com.kevin.playwithcompose.WelcomeActivityAlias"
-                                            ),
-                                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                            PackageManager.DONT_KILL_APP
-                                        )
+                                        if (index == 0) {
+                                            packageManager.setComponentEnabledSetting(
+                                                ComponentName(
+                                                    "com.kevin.playwithcompose",
+                                                    "com.kevin.playwithcompose.WelcomePinkActivity"
+                                                ),
+                                                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                                                PackageManager.DONT_KILL_APP
+                                            )
+                                            packageManager.setComponentEnabledSetting(
+                                                ComponentName(
+                                                    "com.kevin.playwithcompose",
+                                                    "com.kevin.playwithcompose.WelcomeActivity"
+                                                ),
+                                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                                PackageManager.DONT_KILL_APP
+                                            )
+                                            packageManager.setComponentEnabledSetting(
+                                                ComponentName(
+                                                    "com.kevin.playwithcompose",
+                                                    "com.kevin.playwithcompose.WelcomeActivityAlias"
+                                                ),
+                                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                                PackageManager.DONT_KILL_APP
+                                            )
 
-                                    }else if (index==1){
-                                        packageManager.setComponentEnabledSetting(
-                                            ComponentName(
-                                                "com.kevin.playwithcompose",
-                                                "com.kevin.playwithcompose.WelcomePinkActivity"
-                                            ),
-                                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                            PackageManager.DONT_KILL_APP
-                                        )
-                                        packageManager.setComponentEnabledSetting(
-                                            ComponentName(
-                                                "com.kevin.playwithcompose",
-                                                "com.kevin.playwithcompose.WelcomeActivity"
-                                            ),
-                                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                            PackageManager.DONT_KILL_APP
-                                        )
-                                        packageManager.setComponentEnabledSetting(
-                                            ComponentName(
-                                                "com.kevin.playwithcompose",
-                                                "com.kevin.playwithcompose.WelcomeActivityAlias"
-                                            ),
-                                            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                                            PackageManager.DONT_KILL_APP
-                                        )
-                                    }else if(index==2){
-                                        packageManager.setComponentEnabledSetting(
-                                            ComponentName(
-                                                "com.kevin.playwithcompose",
-                                                "com.kevin.playwithcompose.WelcomePinkActivity"
-                                            ),
-                                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                            PackageManager.DONT_KILL_APP
-                                        )
-                                        packageManager.setComponentEnabledSetting(
-                                            ComponentName(
-                                                "com.kevin.playwithcompose",
-                                                "com.kevin.playwithcompose.WelcomeActivity"
-                                            ),
-                                            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                                            PackageManager.DONT_KILL_APP
-                                        )
-                                        packageManager.setComponentEnabledSetting(
-                                            ComponentName(
-                                                "com.kevin.playwithcompose",
-                                                "com.kevin.playwithcompose.WelcomeActivityAlias"
-                                            ),
-                                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                            PackageManager.DONT_KILL_APP
-                                        )
-                                    }
+                                        } else if (index == 1) {
+                                            packageManager.setComponentEnabledSetting(
+                                                ComponentName(
+                                                    "com.kevin.playwithcompose",
+                                                    "com.kevin.playwithcompose.WelcomePinkActivity"
+                                                ),
+                                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                                PackageManager.DONT_KILL_APP
+                                            )
+                                            packageManager.setComponentEnabledSetting(
+                                                ComponentName(
+                                                    "com.kevin.playwithcompose",
+                                                    "com.kevin.playwithcompose.WelcomeActivity"
+                                                ),
+                                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                                PackageManager.DONT_KILL_APP
+                                            )
+                                            packageManager.setComponentEnabledSetting(
+                                                ComponentName(
+                                                    "com.kevin.playwithcompose",
+                                                    "com.kevin.playwithcompose.WelcomeActivityAlias"
+                                                ),
+                                                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                                                PackageManager.DONT_KILL_APP
+                                            )
+                                        } else if (index == 2) {
+                                            packageManager.setComponentEnabledSetting(
+                                                ComponentName(
+                                                    "com.kevin.playwithcompose",
+                                                    "com.kevin.playwithcompose.WelcomePinkActivity"
+                                                ),
+                                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                                PackageManager.DONT_KILL_APP
+                                            )
+                                            packageManager.setComponentEnabledSetting(
+                                                ComponentName(
+                                                    "com.kevin.playwithcompose",
+                                                    "com.kevin.playwithcompose.WelcomeActivity"
+                                                ),
+                                                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                                                PackageManager.DONT_KILL_APP
+                                            )
+                                            packageManager.setComponentEnabledSetting(
+                                                ComponentName(
+                                                    "com.kevin.playwithcompose",
+                                                    "com.kevin.playwithcompose.WelcomeActivityAlias"
+                                                ),
+                                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                                PackageManager.DONT_KILL_APP
+                                            )
+                                        }
                                     }
                                     Toast
                                         .makeText(context, "点击了$index", Toast.LENGTH_SHORT)
