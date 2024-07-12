@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,10 +27,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,9 +61,13 @@ import com.kevin.playwithcompose.ui.theme.onMainColor
 import com.kevin.playwithcompose.ui.theme.primaryLight
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MeScreen(context: Context = LocalContext.current.applicationContext, navHostController: NavHostController,) {
     val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
     Column {
 //        Box(modifier = Modifier
 //            .fillMaxWidth()
@@ -129,6 +143,30 @@ fun MeScreen(context: Context = LocalContext.current.applicationContext, navHost
                 )
                 Button(onClick = { navHostController.navigate(Route.USB_CHECK) }) {
                     Text(text = "检测手机是否连接usb")
+                }
+                Button(onClick = {showBottomSheet=true }) {
+                    Text(text = "显示BottomSheet")
+                }
+                if(showBottomSheet){
+                    ModalBottomSheet(
+                        onDismissRequest = {
+                            showBottomSheet = false
+                        },
+                        sheetState = sheetState,
+//                        scrimColor = Color.Transparent,
+                        windowInsets = BottomSheetDefaults.windowInsets.only(WindowInsetsSides.Bottom)//modal background color overlay status bar
+                    ) {
+                        // Sheet content
+                        Button(onClick = {
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
+                            }
+                        }) {
+                            Text("Hide bottom sheet")
+                        }
+                    }
                 }
                 LazyColumn(
                     contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
