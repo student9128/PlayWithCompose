@@ -1,10 +1,7 @@
 package com.kevin.playwithcompose
 
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -26,6 +23,8 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.ripple.rememberRipple
@@ -35,13 +34,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
@@ -54,9 +55,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kevin.playwithcompose.base.BaseActivity
@@ -79,38 +77,45 @@ class MainActivity : BaseActivity() {
             val top = WindowInsets.statusBars.getTop(Density(this))
             val density = LocalDensity.current.density
             Log.d("MainActivity", "top======${top / density},bottom=${bottom / density}")
+            val scrollState = rememberLazyListState()
             PlayWithComposeTheme {
-                val bottomBarState = rememberSaveable { mutableStateOf(true) }
+//                val showOrHideBottomBarAnim by remember {
+//                    derivedStateOf { scrollState.isScrollingUp() }
+//                }
+                val showBottomBar = rememberSaveable { mutableStateOf(true) }
                 val navController = rememberNavController()
                 val currentBackStack by navController.currentBackStackEntryAsState()
                 val destination = currentBackStack?.destination
                 val currentScreen = tabScreens.find { it.route == destination?.route } ?: Home
-                bottomBarState.value =
+                showBottomBar.value =
                     destination?.route == Home.route || destination?.route == Project.route || destination?.route == Menu.route || destination?.route == Me.route || destination?.route == null
                 Scaffold(
                     bottomBar = {
-                        PlayTabs(
-                            allScreens = tabScreens,
-                            currentScreen = currentScreen,
-                            onTabSelected = { newScreen ->
-                                navController.navigate(route = newScreen.route) {
-                                    print("zou le ma")
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
+                        if (showBottomBar.value) {
+                            PlayTabs(
+                                allScreens = tabScreens,
+                                currentScreen = currentScreen,
+                                onTabSelected = { newScreen ->
+                                    navController.navigate(route = newScreen.route) {
+                                        print("zou le ma")
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                                if (newScreen.route == Project.route) {
-                                    window.statusBarColor = backgroundLight.toArgb()
-                                } else if (newScreen.route == Me.route) {
-                                    window.statusBarColor =
-                                        Color.Transparent.toArgb() // 设置StatusBarColor为透明
-                                } else {
-                                    window.statusBarColor = mainColor.toArgb()
-                                }
-                            }, bottomBarVisible = bottomBarState.value
-                        )
+                                    if (newScreen.route == Project.route) {
+                                        window.statusBarColor = backgroundLight.toArgb()
+                                    } else if (newScreen.route == Me.route) {
+                                        window.statusBarColor =
+                                            Color.Transparent.toArgb() // 设置StatusBarColor为透明
+                                    } else {
+                                        window.statusBarColor = mainColor.toArgb()
+                                    }
+                                },
+                                bottomBarVisible = true
+                            )
+                        }
                     }) { innerPadding ->
                     PlayNavHost(
                         context = this@MainActivity,
@@ -120,7 +125,8 @@ class MainActivity : BaseActivity() {
                             top = 0.dp,
                             end = innerPadding.calculateLeftPadding(LayoutDirection.Ltr),
                             bottom = innerPadding.calculateBottomPadding()
-                        )
+                        ),
+                        scrollState = scrollState
                     )
                 }
             }
@@ -137,8 +143,8 @@ fun PlayTabs(
 ) {
     AnimatedVisibility(
         visible = bottomBarVisible,
-        enter = slideInVertically(initialOffsetY = {it}),
-        exit = slideOutVertically(targetOffsetY = {it})
+        enter = slideInVertically(initialOffsetY = { it }, animationSpec = tween(300)),
+        exit = slideOutVertically(targetOffsetY = { it }, animationSpec = tween(300))
     ) {
         val bottom = WindowInsets.navigationBars.getBottom(LocalDensity.current)
         val density = LocalDensity.current.density
@@ -214,4 +220,25 @@ fun MeScreenX() {
     Column {
         Text(text = "MeScreen")
     }
+}
+
+@Composable
+fun LazyListState.isScrollingUp(): Boolean {
+    var previousItemIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
+    var scrollingUp by remember(this) { mutableStateOf(true) }
+
+    return remember(this) {
+        derivedStateOf {
+            if (previousItemIndex == firstVisibleItemIndex) {
+                scrollingUp = firstVisibleItemScrollOffset - previousScrollOffset <= 0
+            } else {
+                previousItemIndex = firstVisibleItemIndex
+            }
+
+            previousScrollOffset = firstVisibleItemScrollOffset
+
+            scrollingUp
+        }
+    }.value
 }

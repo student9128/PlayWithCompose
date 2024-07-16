@@ -2,17 +2,17 @@ package com.kevin.playwithcompose.navigation
 
 import android.content.Context
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideIn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.currentComposer
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.kevin.playwithcompose.Home
 import com.kevin.playwithcompose.HomeScreen
 import com.kevin.playwithcompose.Me
@@ -26,7 +26,7 @@ import com.kevin.playwithcompose.UsbCheckPage
 import com.kevin.playwithcompose.WebPage
 
 @Composable
-fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier, context: Context) {
+fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier, context: Context,scrollState:LazyListState) {
     NavHost(
         navController = navController,
         modifier = modifier,
@@ -48,7 +48,7 @@ fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier,
             exitTransition = { fadeOut(animationSpec = tween(500)) },
             popEnterTransition = { fadeIn(animationSpec = tween(500)) },
             popExitTransition = { fadeOut(animationSpec = tween(500)) }) {
-            HomeScreen(navController=navController)
+            HomeScreen(navController=navController,listState=scrollState)
         }
         composable(route = Project.route, enterTransition = { fadeIn(animationSpec = tween(500)) },
             exitTransition = { fadeOut(animationSpec = tween(500)) },
@@ -71,8 +71,9 @@ fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier,
         composable(route = Route.USB_CHECK) {
             UsbCheckPage(navHostController = navController)
         }
-        composable(route = Route.WEB) {
-            WebPage(navHostController = navController)
+        composable(route = Route.WEB+"/{url}", arguments = listOf(navArgument("url"){type=NavType.StringType})) { backStackEntry->
+            backStackEntry.arguments?.getString("url")
+                ?.let { WebPage(navHostController = navController, url = it) }
         }
     }
 }

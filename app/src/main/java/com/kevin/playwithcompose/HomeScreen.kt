@@ -2,7 +2,6 @@ package com.kevin.playwithcompose
 
 import android.content.Context
 import android.text.Html
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -74,6 +73,8 @@ import com.kevin.playwithcompose.ui.theme.tertiary
 import com.kevin.playwithcompose.util.LogUtils.printD
 import com.kevin.playwithcompose.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.Timer
 import java.util.TimerTask
 import kotlin.math.absoluteValue
@@ -83,7 +84,7 @@ import kotlin.math.absoluteValue
     ExperimentalLayoutApi::class
 )
 @Composable
-fun HomeScreen(navController: NavHostController,context: Context = LocalContext.current.applicationContext,) {
+fun HomeScreen(navController: NavHostController, context: Context = LocalContext.current.applicationContext, listState:LazyListState) {
     val image1 =
         "https://img1.baidu.com/it/u=1546227440,2897989905&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500"
     val image2 = "https://lmg.jj20.com/up/allimg/1114/0406210Z024/2104060Z024-5-1200.jpg"
@@ -94,7 +95,7 @@ fun HomeScreen(navController: NavHostController,context: Context = LocalContext.
     val pagerList: List<BannerData> by viewModel.bannerData
     val articleList: ArticleListData? by viewModel.articleData
 //    val pagerList = listOf(image4, image1, image2, image3, image4, image1)
-    val listState = rememberLazyListState()
+//    val listState = rememberLazyListState()
     val endOfListReached by remember {
         derivedStateOf {
             listState.isScrolledToEnd(2)
@@ -201,10 +202,11 @@ fun HomeScreen(navController: NavHostController,context: Context = LocalContext.
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(CornerSize(10.dp)))
                             .clickable() {
-                                navController.navigate(Route.WEB)
-                                Toast
-                                    .makeText(context, "$index", Toast.LENGTH_SHORT)
-                                    .show()
+                                val url = articleList?.datas?.get(index)?.link
+                                navController.navigate(Route.WEB+"/${URLEncoder.encode(url,StandardCharsets.UTF_8.toString())}")
+//                                Toast
+//                                    .makeText(context, "$index", Toast.LENGTH_SHORT)
+//                                    .show()
                             },
                         colors = CardDefaults.cardColors(
                             containerColor = if (articleData.author.isEmpty()) Color(0xffEBF3E8) else Color(
