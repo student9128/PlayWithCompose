@@ -202,8 +202,10 @@ fun HomeScreen(navController: NavHostController, context: Context = LocalContext
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(CornerSize(10.dp)))
                             .clickable() {
-                                val url = articleList?.datas?.get(index)?.link
-                                navController.navigate(Route.WEB+"/${URLEncoder.encode(url,StandardCharsets.UTF_8.toString())}")
+                                val data = articleList?.datas?.get(index)
+                                val url = data?.link
+                                val title = data?.title
+                                navController.navigate(Route.WEB+"/${URLEncoder.encode(url,StandardCharsets.UTF_8.toString())}?${title}")
 //                                Toast
 //                                    .makeText(context, "$index", Toast.LENGTH_SHORT)
 //                                    .show()

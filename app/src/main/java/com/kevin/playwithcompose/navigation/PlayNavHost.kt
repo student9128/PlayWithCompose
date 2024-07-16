@@ -71,9 +71,13 @@ fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier,
         composable(route = Route.USB_CHECK) {
             UsbCheckPage(navHostController = navController)
         }
-        composable(route = Route.WEB+"/{url}", arguments = listOf(navArgument("url"){type=NavType.StringType})) { backStackEntry->
-            backStackEntry.arguments?.getString("url")
-                ?.let { WebPage(navHostController = navController, url = it) }
+        composable(route = Route.WEB+"/{url}?{title}", arguments = listOf(navArgument("url"){type=NavType.StringType},
+            navArgument("title"){type = NavType.StringType}
+        )) { backStackEntry->
+            val arguments = backStackEntry.arguments
+            arguments?.getString("url")
+                ?.let { WebPage(navHostController = navController, url = it, title = arguments.getString("title")
+                    ?:"") }
         }
     }
 }
