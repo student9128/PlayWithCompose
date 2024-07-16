@@ -63,6 +63,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kevin.composestudy.bean.BannerData
@@ -82,7 +83,7 @@ import kotlin.math.absoluteValue
     ExperimentalLayoutApi::class
 )
 @Composable
-fun HomeScreen(context: Context = LocalContext.current.applicationContext) {
+fun HomeScreen(navController: NavHostController,context: Context = LocalContext.current.applicationContext,) {
     val image1 =
         "https://img1.baidu.com/it/u=1546227440,2897989905&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500"
     val image2 = "https://lmg.jj20.com/up/allimg/1114/0406210Z024/2104060Z024-5-1200.jpg"
@@ -200,6 +201,7 @@ fun HomeScreen(context: Context = LocalContext.current.applicationContext) {
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(CornerSize(10.dp)))
                             .clickable() {
+                                navController.navigate(Route.WEB)
                                 Toast
                                     .makeText(context, "$index", Toast.LENGTH_SHORT)
                                     .show()

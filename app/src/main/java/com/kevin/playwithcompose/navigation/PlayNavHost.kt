@@ -23,6 +23,7 @@ import com.kevin.playwithcompose.Project
 import com.kevin.playwithcompose.ProjectScreen
 import com.kevin.playwithcompose.Route
 import com.kevin.playwithcompose.UsbCheckPage
+import com.kevin.playwithcompose.WebPage
 
 @Composable
 fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier, context: Context) {
@@ -47,7 +48,7 @@ fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier,
             exitTransition = { fadeOut(animationSpec = tween(500)) },
             popEnterTransition = { fadeIn(animationSpec = tween(500)) },
             popExitTransition = { fadeOut(animationSpec = tween(500)) }) {
-            HomeScreen()
+            HomeScreen(navController=navController)
         }
         composable(route = Project.route, enterTransition = { fadeIn(animationSpec = tween(500)) },
             exitTransition = { fadeOut(animationSpec = tween(500)) },
@@ -69,6 +70,9 @@ fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier,
         }
         composable(route = Route.USB_CHECK) {
             UsbCheckPage(navHostController = navController)
+        }
+        composable(route = Route.WEB) {
+            WebPage(navHostController = navController)
         }
     }
 }
