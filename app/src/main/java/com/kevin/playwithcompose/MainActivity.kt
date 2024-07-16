@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,7 +36,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -59,6 +64,7 @@ import com.kevin.playwithcompose.navigation.PlayNavHost
 import com.kevin.playwithcompose.ui.theme.PlayWithComposeTheme
 import com.kevin.playwithcompose.ui.theme.backgroundLight
 import com.kevin.playwithcompose.ui.theme.mainColor
+
 class MainActivity : BaseActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,12 +78,15 @@ class MainActivity : BaseActivity() {
             val bottom = WindowInsets.navigationBars.getBottom(LocalDensity.current)
             val top = WindowInsets.statusBars.getTop(Density(this))
             val density = LocalDensity.current.density
-            Log.d("MainActivity","top======${top/density},bottom=${bottom/density}")
+            Log.d("MainActivity", "top======${top / density},bottom=${bottom / density}")
             PlayWithComposeTheme {
+                val bottomBarState = rememberSaveable { mutableStateOf(true) }
                 val navController = rememberNavController()
                 val currentBackStack by navController.currentBackStackEntryAsState()
                 val destination = currentBackStack?.destination
                 val currentScreen = tabScreens.find { it.route == destination?.route } ?: Home
+                bottomBarState.value =
+                    destination?.route == Home.route || destination?.route == Project.route || destination?.route == Menu.route || destination?.route == Me.route || destination?.route == null
                 Scaffold(
                     bottomBar = {
                         PlayTabs(
@@ -95,11 +104,13 @@ class MainActivity : BaseActivity() {
                                 if (newScreen.route == Project.route) {
                                     window.statusBarColor = backgroundLight.toArgb()
                                 } else if (newScreen.route == Me.route) {
-                                    window.statusBarColor = Color.Transparent.toArgb() // 设置StatusBarColor为透明
+                                    window.statusBarColor =
+                                        Color.Transparent.toArgb() // 设置StatusBarColor为透明
                                 } else {
                                     window.statusBarColor = mainColor.toArgb()
                                 }
-                            })
+                            }, bottomBarVisible = bottomBarState.value
+                        )
                     }) { innerPadding ->
                     PlayNavHost(
                         context = this@MainActivity,
@@ -121,30 +132,37 @@ class MainActivity : BaseActivity() {
 fun PlayTabs(
     allScreens: List<PlayDestinations>,
     onTabSelected: (PlayDestinations) -> Unit,
-    currentScreen: PlayDestinations
+    currentScreen: PlayDestinations,
+    bottomBarVisible: Boolean
 ) {
-    val bottom = WindowInsets.navigationBars.getBottom(LocalDensity.current)
-    val density = LocalDensity.current.density
-    Log.d("MainActivity","top======,bottom=${bottom/density}")
-    Surface(
-        color = Color(0xFFF1EFEF),
-        modifier = Modifier
-            .height((56+bottom/density).dp)
-            .fillMaxWidth()
-            .navigationBarsPadding()
-//            .blur(radiusX = 1.dp, radiusY = 1.dp)
+    AnimatedVisibility(
+        visible = bottomBarVisible,
+        enter = slideInVertically(initialOffsetY = {it}),
+        exit = slideOutVertically(targetOffsetY = {it})
     ) {
-        Row(
-            Modifier.selectableGroup(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
+        val bottom = WindowInsets.navigationBars.getBottom(LocalDensity.current)
+        val density = LocalDensity.current.density
+        Log.d("MainActivity", "top======,bottom=${bottom / density}")
+        Surface(
+            color = Color(0xFFF1EFEF),
+            modifier = Modifier
+                .height((56 + bottom / density).dp)
+                .fillMaxWidth()
+                .navigationBarsPadding()
+//            .blur(radiusX = 1.dp, radiusY = 1.dp)
         ) {
-            allScreens.forEach { screen ->
-                PlayTab(
-                    screen = screen,
-                    onTabSelected = { onTabSelected(screen) },
-                    selected = currentScreen == screen
-                )
+            Row(
+                Modifier.selectableGroup(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                allScreens.forEach { screen ->
+                    PlayTab(
+                        screen = screen,
+                        onTabSelected = { onTabSelected(screen) },
+                        selected = currentScreen == screen
+                    )
+                }
             }
         }
     }
