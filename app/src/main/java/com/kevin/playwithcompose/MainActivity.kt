@@ -28,6 +28,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.BottomAppBarScrollBehavior
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -45,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
@@ -63,8 +67,8 @@ import com.kevin.playwithcompose.ui.theme.PlayWithComposeTheme
 import com.kevin.playwithcompose.ui.theme.backgroundLight
 import com.kevin.playwithcompose.ui.theme.mainColor
 
+@OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : BaseActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
@@ -89,33 +93,69 @@ class MainActivity : BaseActivity() {
                 val currentScreen = tabScreens.find { it.route == destination?.route } ?: Home
                 showBottomBar.value =
                     destination?.route == Home.route || destination?.route == Project.route || destination?.route == Menu.route || destination?.route == Me.route || destination?.route == null
+                val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
                 Scaffold(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                     bottomBar = {
                         if (showBottomBar.value) {
-                            PlayTabs(
-                                allScreens = tabScreens,
-                                currentScreen = currentScreen,
-                                onTabSelected = { newScreen ->
-                                    navController.navigate(route = newScreen.route) {
-                                        print("zou le ma")
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
+                            BottomAppBar(scrollBehavior = scrollBehavior) {
+                                Row(
+                                    Modifier.selectableGroup(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    tabScreens.forEach { screen ->
+                                        PlayTab(
+                                            screen = screen,
+                                            onTabSelected = {
+                                                navController.navigate(route = screen.route) {
+                                                    print("zou le ma")
+                                                    popUpTo(navController.graph.findStartDestination().id) {
+                                                        saveState = true
+                                                    }
+                                                    launchSingleTop = true
+                                                    restoreState = true
+                                                }
+                                                if (screen.route == Project.route) {
+                                                    window.statusBarColor = backgroundLight.toArgb()
+                                                } else if (screen.route == Me.route) {
+                                                    window.statusBarColor =
+                                                        Color.Transparent.toArgb() // 设置StatusBarColor为透明
+                                                } else {
+                                                    window.statusBarColor = mainColor.toArgb()
+                                                }
+                                            },
+                                            selected = currentScreen == screen
+                                        )
                                     }
-                                    if (newScreen.route == Project.route) {
-                                        window.statusBarColor = backgroundLight.toArgb()
-                                    } else if (newScreen.route == Me.route) {
-                                        window.statusBarColor =
-                                            Color.Transparent.toArgb() // 设置StatusBarColor为透明
-                                    } else {
-                                        window.statusBarColor = mainColor.toArgb()
-                                    }
-                                },
-                                bottomBarVisible = true
-                            )
+                                }
+                            }
                         }
+//                        if (showBottomBar.value) {
+//                            PlayTabs(
+//                                allScreens = tabScreens,
+//                                currentScreen = currentScreen,
+//                                onTabSelected = { newScreen ->
+//                                    navController.navigate(route = newScreen.route) {
+//                                        print("zou le ma")
+//                                        popUpTo(navController.graph.findStartDestination().id) {
+//                                            saveState = true
+//                                        }
+//                                        launchSingleTop = true
+//                                        restoreState = true
+//                                    }
+//                                    if (newScreen.route == Project.route) {
+//                                        window.statusBarColor = backgroundLight.toArgb()
+//                                    } else if (newScreen.route == Me.route) {
+//                                        window.statusBarColor =
+//                                            Color.Transparent.toArgb() // 设置StatusBarColor为透明
+//                                    } else {
+//                                        window.statusBarColor = mainColor.toArgb()
+//                                    }
+//                                },
+//                                bottomBarVisible = true
+//                            )
+//                        }
                     }) { innerPadding ->
                     PlayNavHost(
                         context = this@MainActivity,

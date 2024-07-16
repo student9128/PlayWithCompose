@@ -16,6 +16,7 @@ converter-gson = "2.9.0"
 retrofit-adapters = "2.8.1"
 okhttp = "5.0.0-alpha.11"
 logging-interceptor = "5.0.0-alpha.11"
+material3 = "1.2.1"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -31,7 +32,7 @@ ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-material3 = { group = "androidx.compose.material3", name = "material3" }
+material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "core-splashscreen" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil-compose" }
