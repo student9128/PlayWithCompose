@@ -81,11 +81,14 @@ class MainActivity : BaseActivity() {
             val top = WindowInsets.statusBars.getTop(Density(this))
             val density = LocalDensity.current.density
             Log.d("MainActivity", "top======${top / density},bottom=${bottom / density}")
-            val scrollState = rememberLazyListState()
             PlayWithComposeTheme {
 //                val showOrHideBottomBarAnim by remember {
 //                    derivedStateOf { scrollState.isScrollingUp() }
 //                }
+                val scrollState = rememberLazyListState()
+                val firstVisibleItemIndex by remember {
+                    derivedStateOf { scrollState.firstVisibleItemIndex }
+                }
                 val showBottomBar = rememberSaveable { mutableStateOf(true) }
                 val navController = rememberNavController()
                 val currentBackStack by navController.currentBackStackEntryAsState()
@@ -94,6 +97,9 @@ class MainActivity : BaseActivity() {
                 showBottomBar.value =
                     destination?.route == Home.route || destination?.route == Project.route || destination?.route == Menu.route || destination?.route == Me.route || destination?.route == null
                 val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
+                if (firstVisibleItemIndex == 0) {
+                    scrollBehavior.state.heightOffset = 0f
+                }
                 Scaffold(
                     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                     bottomBar = {
