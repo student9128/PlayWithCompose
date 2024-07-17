@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,6 +28,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
@@ -66,6 +68,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kevin.composestudy.bean.BannerData
+import com.kevin.playwithcompose.bean.ArticleData
 import com.kevin.playwithcompose.bean.ArticleListData
 import com.kevin.playwithcompose.ui.theme.mainColor
 import com.kevin.playwithcompose.ui.theme.primaryLight
@@ -84,7 +87,11 @@ import kotlin.math.absoluteValue
     ExperimentalLayoutApi::class
 )
 @Composable
-fun HomeScreen(navController: NavHostController, context: Context = LocalContext.current.applicationContext, listState:LazyListState) {
+fun HomeScreen(
+    navController: NavHostController,
+    context: Context = LocalContext.current.applicationContext,
+    listState: LazyListState
+) {
     val image1 =
         "https://img1.baidu.com/it/u=1546227440,2897989905&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500"
     val image2 = "https://lmg.jj20.com/up/allimg/1114/0406210Z024/2104060Z024-5-1200.jpg"
@@ -196,92 +203,15 @@ fun HomeScreen(navController: NavHostController, context: Context = LocalContext
                     val articleData = articleList!!.datas[index]
                     val decodedText =
                         Html.fromHtml(articleData.title, Html.FROM_HTML_MODE_LEGACY).toString()
-                    Card(
-                        modifier = Modifier
-                            .padding(top = 16.dp, start = 10.dp, end = 10.dp)
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(CornerSize(10.dp)))
-                            .clickable() {
-                                val data = articleList?.datas?.get(index)
-                                val url = data?.link
-                                val title = data?.title
-                                navController.navigate(Route.WEB+"/${URLEncoder.encode(url,StandardCharsets.UTF_8.toString())}?${title}")
-//                                Toast
-//                                    .makeText(context, "$index", Toast.LENGTH_SHORT)
-//                                    .show()
-                            },
-                        colors = CardDefaults.cardColors(
-                            containerColor = if (articleData.author.isEmpty()) Color(0xffEBF3E8) else Color(
-                                0xffF4EEEE
-                            )
-                        )
-                    ) {
-                        Column(modifier = Modifier.padding(10.dp)) {
-
-                            Text(
-                                text = decodedText,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            FlowRow(modifier = Modifier.padding(vertical = 10.dp)) {
-                                articleData.tags.forEach { item ->
-                                    Text(
-                                        text = item.name,
-                                        color = primaryLight,
-                                        fontSize = 12.sp,
-                                        modifier = Modifier
-                                            .border(
-                                                width = 1.dp,
-                                                color = primaryLight,
-                                                shape = RoundedCornerShape(20.dp)
-                                            )
-                                            .padding(horizontal = 10.dp, vertical = 5.dp)
-                                    )
-                                }
-                            }
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Row {
-                                    Text(
-                                        text = articleData.author.ifEmpty { "分享人：${articleData.shareUser}" },
-                                        color = if (articleData.author.isEmpty()) Color.Red.copy(
-                                            alpha = 0.5f
-                                        ) else primaryLight,
-                                        fontSize = 12.sp,
-                                    )
-                                    Text(
-                                        text = articleData.niceDate,
-                                        color = tertiary,
-                                        fontSize = 12.sp,
-                                        modifier = Modifier.padding(horizontal = 10.dp)
-                                    )
-                                }
-                                Image(
-                                    imageVector = Icons.Outlined.FavoriteBorder,
-                                    contentDescription = null,
-                                    colorFilter = ColorFilter.tint(
-                                        tertiary
-                                    )
-                                )
-                            }
-                        }
-                    }
+                    buildArticleItem(articleList, index, navController, articleData, decodedText)
                 }
 
             }
 
             AnimatedVisibility(
                 visible = showScrollToTop,
-//                enter = fadeIn(animationSpec = tween(durationMillis = 100)),
-//                exit = fadeOut(animationSpec = tween(durationMillis = 100)),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-//                    .padding(bottom = 20.dp, end = 10.dp)
-//                    .clip(CircleShape)
             ) {
                 FloatingActionButton(
                     onClick = {
@@ -295,7 +225,6 @@ fun HomeScreen(navController: NavHostController, context: Context = LocalContext
                         .size(70.dp)
                         .align(Alignment.BottomEnd)
                         .padding(bottom = 20.dp, end = 10.dp, start = 10.dp)
-//                        .clip(CircleShape)
                 ) {
                     Icon(
                         Icons.Filled.ArrowForward,
@@ -377,6 +306,142 @@ fun HomeScreen(navController: NavHostController, context: Context = LocalContext
 
     }
 
+}
+
+@Composable
+@OptIn(ExperimentalLayoutApi::class)
+private fun buildArticleItem(
+    articleList: ArticleListData?,
+    index: Int,
+    navController: NavHostController,
+    articleData: ArticleData,
+    decodedText: String
+) {
+    Card(
+        modifier = Modifier
+            .padding(top = 16.dp, start = 10.dp, end = 10.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(CornerSize(10.dp)))
+            .clickable() {
+                val data = articleList?.datas?.get(index)
+                val url = data?.link
+                val title = data?.title
+                navController.navigate(
+                    Route.WEB + "/${
+                        URLEncoder.encode(
+                            url,
+                            StandardCharsets.UTF_8.toString()
+                        )
+                    }?${title}"
+                )
+//                                Toast
+//                                    .makeText(context, "$index", Toast.LENGTH_SHORT)
+//                                    .show()
+            },
+        colors = CardDefaults.cardColors(
+            containerColor = if (articleData.author.isEmpty()) Color(0xffEBF3E8) else Color(
+                0xffF4EEEE
+            )
+        )
+    ) {
+        Column(modifier = Modifier.padding(10.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .width(50.dp)
+                            .height(50.dp),
+                        colorFilter = ColorFilter.tint(
+                            color = if (articleData.author.isEmpty()) Color.Red.copy(
+                                alpha = 0.5f
+                            ) else primaryLight.copy(alpha = 0.8f)
+                        )
+                    )
+                    Column {
+                        Text(
+                            text = articleData.author.ifEmpty { "${articleData.shareUser} (分享人)" },
+                            color = if (articleData.author.isEmpty()) Color.Red.copy(
+                                alpha = 0.5f
+                            ) else primaryLight,
+                            fontSize = 12.sp,
+                        )
+                        Text(
+                            text = articleData.niceDate,
+                            color = tertiary,
+                            fontSize = 12.sp,
+                        )
+                    }
+                }
+                Image(
+                    imageVector = Icons.Outlined.FavoriteBorder,
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(
+                        tertiary.copy(alpha = 0.5f)
+                    )
+                )
+            }
+
+            Text(
+                modifier = Modifier.padding(top = 10.dp),
+                text = decodedText,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            if (articleData.tags.isNotEmpty()) {
+                FlowRow(modifier = Modifier.padding(vertical = 10.dp)) {
+                    articleData.tags.forEach { item ->
+                        Text(
+                            text = item.name,
+                            color = primaryLight,
+                            fontSize = 10.sp,
+                            modifier = Modifier
+                                .border(
+                                    width = 1.dp,
+                                    color = primaryLight,
+                                    shape = RoundedCornerShape(20.dp)
+                                )
+                                .padding(horizontal = 10.dp, vertical = 0.dp)
+                        )
+                    }
+                }
+            }
+//            Row(
+//                horizontalArrangement = Arrangement.SpaceBetween,
+//                verticalAlignment = Alignment.CenterVertically,
+//                modifier = Modifier.fillMaxWidth()
+//            ) {
+//                Row {
+//                    Text(
+//                        text = articleData.author.ifEmpty { "分享人：${articleData.shareUser}" },
+//                        color = if (articleData.author.isEmpty()) Color.Red.copy(
+//                            alpha = 0.5f
+//                        ) else primaryLight,
+//                        fontSize = 12.sp,
+//                    )
+//                    Text(
+//                        text = articleData.niceDate,
+//                        color = tertiary,
+//                        fontSize = 12.sp,
+//                        modifier = Modifier.padding(horizontal = 10.dp)
+//                    )
+//                }
+//                Image(
+//                    imageVector = Icons.Outlined.FavoriteBorder,
+//                    contentDescription = null,
+//                    colorFilter = ColorFilter.tint(
+//                        tertiary
+//                    )
+//                )
+//            }
+        }
+    }
 }
 
 @Composable
