@@ -1,5 +1,6 @@
 package com.kevin.playwithcompose.ui.widget
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -56,7 +57,7 @@ fun Swiper(list: List<BannerData>,modifier: Modifier=Modifier) {
         val task = object : TimerTask() {
             override fun run() {
                 coroutineScope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                    pagerState.animateScrollToPage(pagerState.currentPage + 1, animationSpec = tween(durationMillis = 1000))
                 }
             }
         }
