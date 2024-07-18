@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CornerSize
@@ -73,6 +72,7 @@ import com.kevin.playwithcompose.bean.ArticleListData
 import com.kevin.playwithcompose.ui.theme.mainColor
 import com.kevin.playwithcompose.ui.theme.primaryLight
 import com.kevin.playwithcompose.ui.theme.tertiary
+import com.kevin.playwithcompose.ui.widget.Swiper
 import com.kevin.playwithcompose.util.LogUtils.printD
 import com.kevin.playwithcompose.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
@@ -117,7 +117,6 @@ fun HomeScreen(
     }
     printD("first===$showScrollToTop")
     val coroutineScope = rememberCoroutineScope()
-
     // act when end of list reached
     LaunchedEffect(endOfListReached) {
         // do your stuff
@@ -130,70 +129,9 @@ fun HomeScreen(
                 modifier = Modifier.padding(innerPadding),
                 contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
             ) {
-                item {
-                    printD("value=======${pagerList}")
-                    val pagerState = rememberPagerState(
-                        initialPage = 1,
-                        initialPageOffsetFraction = 0f
-                    ) {
-                        pagerList.size
-                    }
-                    LaunchedEffect(key1 = pagerState) {
-                        snapshotFlow { pagerState.isScrollInProgress }
-                            .collect { isScrolling ->
-                                if (!isScrolling) {
-                                    if (pagerState.currentPage == pagerList.size - 1) pagerState.scrollToPage(
-                                        1
-                                    ) else if (pagerState.currentPage == 0) pagerState.scrollToPage(
-                                        pagerList.size - 2
-                                    )
-                                }
-                            }
-
-                    }
-                    DisposableEffect(key1 = pagerState) {
-                        val timer = Timer()
-                        timer.schedule(object : TimerTask() {
-                            override fun run() {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                                }
-                            }
-                        }, 3000, 3000)
-                        onDispose {
-                            timer.cancel()
-                        }
-
-                    }
-                    HorizontalPager(state = pagerState, beyondBoundsPageCount = 1) { index ->
-                        Card(modifier = Modifier
-                            .padding(horizontal = 10.dp)
-                            .graphicsLayer {
-                                val pageOffset = (
-                                        (pagerState.currentPage - index) + pagerState
-                                            .currentPageOffsetFraction
-                                        ).absoluteValue
-                                val scale = lerp(
-                                    start = ScaleFactor(0.8f, 0.8f),
-                                    stop = ScaleFactor(1f, 1f),
-                                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                                )
-                                scaleX = scale.scaleX
-                                scaleY = scale.scaleY
-                            }) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(pagerList[index].imagePath)
-                                    .crossfade(true)
-                                    .build(),
-//                model = image4,
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp)
-                            )
-                        }
+                item{
+                    Box(modifier = Modifier.padding(horizontal = 10.dp)){
+                    Swiper(list = pagerList)
                     }
                 }
 
@@ -203,7 +141,7 @@ fun HomeScreen(
                     val articleData = articleList!!.datas[index]
                     val decodedText =
                         Html.fromHtml(articleData.title, Html.FROM_HTML_MODE_LEGACY).toString()
-                    buildArticleItem(articleList, index, navController, articleData, decodedText)
+                    BuildArticleItem(articleList, index, navController, articleData, decodedText)
                 }
 
             }
@@ -310,7 +248,7 @@ fun HomeScreen(
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-private fun buildArticleItem(
+private fun BuildArticleItem(
     articleList: ArticleListData?,
     index: Int,
     navController: NavHostController,
