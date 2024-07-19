@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -74,13 +75,14 @@ Scaffold {innerPadding->
     Column(modifier = Modifier.padding(innerPadding)) {
         SearchBar()
         Row {
-            var selectedIndex by remember {
+            var selectedIndex by rememberSaveable {
                 mutableIntStateOf(0)
             }
             val titleListState = rememberLazyListState()
             val listState = rememberLazyListState()
             val coroutineScope = rememberCoroutineScope()
-            LaunchedEffect(key1 = listState) {
+            LaunchedEffect(key1 = listState, key2 = selectedIndex) {
+                listState.scrollToItem(selectedIndex)
                 snapshotFlow { listState.firstVisibleItemIndex }
                     .distinctUntilChanged()
                     .collect { index ->

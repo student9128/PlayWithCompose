@@ -119,7 +119,7 @@ fun MeScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+                .height(300.dp)
 //                    .clip(RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp))
                 .background(brush)
         )
