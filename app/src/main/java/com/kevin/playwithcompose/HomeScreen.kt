@@ -1,7 +1,12 @@
 package com.kevin.playwithcompose
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.text.Html
+import androidx.browser.customtabs.CustomTabColorSchemeParams
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -22,8 +27,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -38,14 +41,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,19 +54,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ScaleFactor
-import androidx.compose.ui.layout.lerp
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.kevin.composestudy.bean.BannerData
 import com.kevin.playwithcompose.bean.ArticleData
 import com.kevin.playwithcompose.bean.ArticleListData
@@ -255,6 +253,7 @@ private fun BuildArticleItem(
     articleData: ArticleData,
     decodedText: String
 ) {
+    val ctx = LocalContext.current
     Card(
         modifier = Modifier
             .padding(top = 16.dp, start = 10.dp, end = 10.dp)
@@ -264,6 +263,7 @@ private fun BuildArticleItem(
                 val data = articleList?.datas?.get(index)
                 val url = data?.link
                 val title = data?.title
+//                openTab(ctx,url!!);
                 navController.navigate(
                     Route.WEB + "/${
                         URLEncoder.encode(
@@ -272,9 +272,6 @@ private fun BuildArticleItem(
                         )
                     }?${title}"
                 )
-//                                Toast
-//                                    .makeText(context, "$index", Toast.LENGTH_SHORT)
-//                                    .show()
             },
         colors = CardDefaults.cardColors(
             containerColor = if (articleData.author.isEmpty()) Color(0xffEBF3E8) else Color(
@@ -405,3 +402,35 @@ fun BottomShadow(alpha: Float = 0.1f, height: Dp = 8.dp) {
 fun LazyListState.isScrolledToEnd(lastReachCount: Int = 1) =
     if (layoutInfo.totalItemsCount < 10 || lastReachCount >= layoutInfo.totalItemsCount) false else
         layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - lastReachCount
+
+fun openTab(context: Context,url:String) {
+    val package_name = "com.android.chrome"
+
+    val activity = (context as? Activity)
+    val builder = CustomTabsIntent.Builder()
+    builder.setShowTitle(true)
+
+    builder.setInstantAppsEnabled(true)
+
+//    builder.setToolbarColor(ContextCompat.getColor(context, R.color.purple_200))
+    val colorScheme = CustomTabColorSchemeParams.Builder().setToolbarColor(mainColor.toArgb()).build()
+    builder.setDefaultColorSchemeParams(colorScheme)
+    builder.setShareState(CustomTabsIntent.SHARE_STATE_ON)
+
+    val customBuilder = builder.build()
+
+    if (package_name != null) {
+//        customBuilder.intent.setPackage(package_name)
+
+        customBuilder.launchUrl(context, Uri.parse(url))
+    } else {
+        // this method will be called if the
+        // chrome is not present in user device.
+        // in this case we are simply passing URL
+        // within intent to open it.
+        val i = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+
+        activity?.startActivity(i)
+    }
+
+}
