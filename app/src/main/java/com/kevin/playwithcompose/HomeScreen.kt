@@ -3,6 +3,9 @@ package com.kevin.playwithcompose
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.text.Html
 import androidx.browser.customtabs.CustomTabColorSchemeParams
@@ -61,7 +64,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.kevin.composestudy.bean.BannerData
@@ -74,11 +76,7 @@ import com.kevin.playwithcompose.ui.widget.Swiper
 import com.kevin.playwithcompose.util.LogUtils.printD
 import com.kevin.playwithcompose.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
-import java.util.Timer
-import java.util.TimerTask
-import kotlin.math.absoluteValue
+
 
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
@@ -263,15 +261,15 @@ private fun BuildArticleItem(
                 val data = articleList?.datas?.get(index)
                 val url = data?.link
                 val title = data?.title
-//                openTab(ctx,url!!);
-                navController.navigate(
-                    Route.WEB + "/${
-                        URLEncoder.encode(
-                            url,
-                            StandardCharsets.UTF_8.toString()
-                        )
-                    }?${title}"
-                )
+                openTab(ctx, url!!);
+//                navController.navigate(
+//                    Route.WEB + "/${
+//                        URLEncoder.encode(
+//                            url,
+//                            StandardCharsets.UTF_8.toString()
+//                        )
+//                    }?${title}"
+//                )
             },
         colors = CardDefaults.cardColors(
             containerColor = if (articleData.author.isEmpty()) Color(0xffEBF3E8) else Color(
@@ -404,6 +402,27 @@ fun LazyListState.isScrolledToEnd(lastReachCount: Int = 1) =
         layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - lastReachCount
 
 fun openTab(context: Context,url:String) {
+    val pm = context.packageManager
+//    val filter = IntentFilter(Intent.ACTION_VIEW)
+//    filter.addCategory(Intent.CATEGORY_BROWSABLE)
+//    val activities: List<ResolveInfo> = ArrayList()
+//    printD("Hello===pm=${pm}")
+//    pm?.let {
+//    val resolveInfo:List<ResolveInfo> = pm.getPreferredActivities(filter,activities)
+//        printD("Hello===2=${resolveInfo.size}")
+//        resolveInfo.let {
+//            if(it.isNotEmpty()){
+//              val ri =   it[0]
+//                printD("Hello===${ri.activityInfo.packageName}")
+//            }
+//        }
+//    }
+    val uri = Uri.parse("http://www.example.com") // Replace with any URL
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+    val packageManager = context.packageManager
+
+    val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+    printD("llllll======${resolveInfo?.activityInfo?.packageName}")
     val package_name = "com.android.chrome"
 
     val activity = (context as? Activity)
@@ -420,7 +439,8 @@ fun openTab(context: Context,url:String) {
     val customBuilder = builder.build()
 
     if (package_name != null) {
-//        customBuilder.intent.setPackage(package_name)
+        customBuilder.intent.setPackage(package_name)
+        printD("Hello======")
 
         customBuilder.launchUrl(context, Uri.parse(url))
     } else {
