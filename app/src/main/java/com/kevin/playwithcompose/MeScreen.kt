@@ -131,6 +131,13 @@ fun MeScreen(
                 HeaderView()
 
             }
+            item{
+                Row (modifier = Modifier.fillMaxWidth().clickable {
+                    navHostController.navigate(Route.OPEN_APP)
+                }){
+                    Text(text = "打开第三方应用")
+                }
+            }
             items(count = 100) { index ->
                 Row(
                     Modifier

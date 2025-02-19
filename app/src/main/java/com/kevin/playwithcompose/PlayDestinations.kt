@@ -50,4 +50,5 @@ val tabScreens = listOf(Home,Project,Menu,Me)
 object Route{
     const val USB_CHECK = "usb_check"
     const val WEB = "web_page"
+    const val OPEN_APP = "open_app_page"
 }

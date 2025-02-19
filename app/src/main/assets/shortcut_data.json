@@ -1,0 +1,195 @@
+[
+  {
+    "key": "alipay",
+    "title": "支付宝",
+    "list": [
+      {
+        "key": "scan",
+        "title": "扫一扫",
+        "url": "alipayqr://platformapi/startapp?saId=10000007"
+      },
+      {
+        "key": "receive",
+        "title": "收款码",
+        "url": "alipays://platformapi/startapp?appId=20000123"
+      },
+      {
+        "key": "pay",
+        "title": "付款码",
+        "url": "alipay://platformapi/startapp?appId=20000056"
+      },
+      {
+        "key": "zhimaxinyong",
+        "title": "芝麻信用",
+        "url": "alipayqr://platformapi/startapp?saId=20000118"
+      },
+      {
+        "key": "yuebao",
+        "title": "余额宝",
+        "url": "alipays://platformapi/startapp?appId=20000032"
+      },
+      {
+        "key": "jiaofei",
+        "title": "生活缴费",
+        "url": "alipays://platformapi/startapp?appId=20000193"
+      },
+      {
+        "key": "huabei",
+        "title": "花呗",
+        "url": "alipays://platformapi/startapp?appId=20000199"
+      },
+      {
+        "key": "zhuanzhang",
+        "title": "转账",
+        "url": "alipays://platformapi/startapp?appId=20000116"
+      },
+      {
+        "key": "didichuxing",
+        "title": "滴滴出行",
+        "url": "alipays://platformapi/startapp?appId=20000778"
+      },
+      {
+        "key": "gongjijin",
+        "title": "公积金查询",
+        "url": "alipays://platformapi/startapp?appId=2019060365493242"
+      },
+      {
+        "key": "huolala",
+        "title": "货拉拉",
+        "url": "alipays://platformapi/startapp?appId=2018061360359342"
+      },
+      {
+        "key": "mayisenlin",
+        "title": "蚂蚁森林",
+        "url": "alipays://platformapi/startapp?appId=60000002"
+      },
+      {
+        "key": "shenqiwuzhong",
+        "title": "神奇物种",
+        "url": "alipays://platformapi/startapp?appId=68687886"
+      },
+      {
+        "key": "shenqihaiyang",
+        "title": "神奇海洋",
+        "url": "alipays://platformapi/startapp?appId=2021003115672468"
+      },
+      {
+        "key": "babafarm",
+        "title": "芭芭农场",
+        "url": "alipays://platformapi/startapp?appId=68687599"
+      },
+      {
+        "key": "mayizhuangyuan",
+        "title": "蚂蚁庄园",
+        "url": "alipays://platformapi/startapp?appId=66666674"
+      }
+    ]
+  },
+  {
+    "key": "wechat",
+    "title": "微信",
+    "list": [
+      {
+        "key": "open",
+        "title": "打开微信",
+        "url": "weixin://"
+      },
+      {
+        "key": "scan",
+        "title": "扫一扫",
+        "url": "weixin://scanqrcode"
+      }
+    ]
+  },
+  {
+    "key": "meituan",
+    "title": "美团",
+    "list": [
+      {
+        "key": "scan",
+        "title": "扫一扫",
+        "url": "imeituan://www.meituan.com/scanQRCode?openAR=1"
+      }
+    ]
+  },
+  {
+    "key": "zhihu",
+    "title": "知乎",
+    "list": [
+      {
+        "key": "scan",
+        "title": "扫一扫",
+        "url": "zhihu://codereader"
+      }
+    ]
+  },
+  {
+    "key": "amap",
+    "title": "高德地图",
+    "list": [
+      {
+        "key": "open",
+        "title": "打开高德",
+        "url": "amapuri://"
+      }
+    ]
+  },
+  {
+    "key": "yunshanfu",
+    "title": "云闪付",
+    "list": [
+      {
+        "key": "open",
+        "title": "打开云闪付",
+        "url": "upwallet://"
+      },
+      {
+        "key": "scan",
+        "title": "扫一扫",
+        "url": "upwallet://native/scanCode"
+      },
+      {
+        "key": "pay",
+        "title": "付款码",
+        "url": "upwallet://pay"
+      },
+      {
+        "key": "ridingcode",
+        "title": "乘车码",
+        "url": "upwallet://rn/rnhtmlridingcode"
+      }
+    ]
+  },
+  {
+    "key": "dingtalk",
+    "title": "钉钉",
+    "list": [
+      {
+        "key": "open",
+        "title": "打开钉钉",
+        "url": "dingtalk://"
+      },
+      {
+        "key": "scan",
+        "title": "扫一扫",
+        "url": "dingtalk://dingtalkclient/page/scan"
+      }
+    ]
+  },
+  {
+    "key": "qqmusic",
+    "title": "QQ音乐",
+    "list": [
+      {
+        "key": "open",
+        "title": "打开QQ音乐",
+        "url": "qqmusic://"
+      },
+      {
+        "key": "recognize",
+        "title": "听歌识曲",
+        "url": "qqmusic://http://qq.com/ui/recognize"
+      }
+    ]
+  }
+]

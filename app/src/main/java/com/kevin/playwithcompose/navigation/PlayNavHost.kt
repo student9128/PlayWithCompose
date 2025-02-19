@@ -19,6 +19,7 @@ import com.kevin.playwithcompose.Me
 import com.kevin.playwithcompose.MeScreen
 import com.kevin.playwithcompose.Menu
 import com.kevin.playwithcompose.MenuScreen
+import com.kevin.playwithcompose.OpenAppPage
 import com.kevin.playwithcompose.Project
 import com.kevin.playwithcompose.ProjectScreen
 import com.kevin.playwithcompose.Route
@@ -78,6 +79,9 @@ fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier,
             arguments?.getString("url")
                 ?.let { WebPage(navHostController = navController, url = it, title = arguments.getString("title")
                     ?:"") }
+        }
+        composable(route=Route.OPEN_APP){
+            OpenAppPage(navHostController = navController)
         }
     }
 }
