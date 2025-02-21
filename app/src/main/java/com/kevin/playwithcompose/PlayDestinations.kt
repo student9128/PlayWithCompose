@@ -51,4 +51,6 @@ object Route{
     const val USB_CHECK = "usb_check"
     const val WEB = "web_page"
     const val OPEN_APP = "open_app_page"
+    const val SETTINGS = "setting_page"
+    const val APP_WIDGET = "app_widget_page"
 }

@@ -68,7 +68,7 @@ fun Swiper(list: List<BannerData>,modifier: Modifier=Modifier) {
         }
 
     }
-    HorizontalPager(state = pagerState, beyondBoundsPageCount = 1, modifier = modifier) { index ->
+    HorizontalPager(state = pagerState, beyondViewportPageCount = 1, modifier = modifier) { index ->
         Card(modifier = Modifier
 //            .padding(horizontal = 10.dp)
             .graphicsLayer {

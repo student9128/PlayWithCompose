@@ -25,9 +25,16 @@ import com.kevin.playwithcompose.ProjectScreen
 import com.kevin.playwithcompose.Route
 import com.kevin.playwithcompose.UsbCheckPage
 import com.kevin.playwithcompose.WebPage
+import com.kevin.playwithcompose.me.AppWidgetPage
+import com.kevin.playwithcompose.me.SettingPage
 
 @Composable
-fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier, context: Context,scrollState:LazyListState) {
+fun PlayNavHost(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    context: Context,
+    scrollState: LazyListState
+) {
     NavHost(
         navController = navController,
         modifier = modifier,
@@ -49,7 +56,7 @@ fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier,
             exitTransition = { fadeOut(animationSpec = tween(500)) },
             popEnterTransition = { fadeIn(animationSpec = tween(500)) },
             popExitTransition = { fadeOut(animationSpec = tween(500)) }) {
-            HomeScreen(navController=navController,listState=scrollState)
+            HomeScreen(navController = navController, listState = scrollState)
         }
         composable(route = Project.route, enterTransition = { fadeIn(animationSpec = tween(500)) },
             exitTransition = { fadeOut(animationSpec = tween(500)) },
@@ -72,16 +79,29 @@ fun PlayNavHost(navController: NavHostController, modifier: Modifier = Modifier,
         composable(route = Route.USB_CHECK) {
             UsbCheckPage(navHostController = navController)
         }
-        composable(route = Route.WEB+"/{url}?{title}", arguments = listOf(navArgument("url"){type=NavType.StringType},
-            navArgument("title"){type = NavType.StringType}
-        )) { backStackEntry->
+        composable(route = Route.WEB + "/{url}?{title}",
+            arguments = listOf(navArgument("url") { type = NavType.StringType },
+                navArgument("title") { type = NavType.StringType }
+            )) { backStackEntry ->
             val arguments = backStackEntry.arguments
             arguments?.getString("url")
-                ?.let { WebPage(navHostController = navController, url = it, title = arguments.getString("title")
-                    ?:"") }
+                ?.let {
+                    WebPage(
+                        navHostController = navController,
+                        url = it,
+                        title = arguments.getString("title")
+                            ?: ""
+                    )
+                }
         }
-        composable(route=Route.OPEN_APP){
+        composable(route = Route.OPEN_APP) {
             OpenAppPage(navHostController = navController)
+        }
+        composable(route = Route.SETTINGS) {
+            SettingPage(navHostController = navController)
+        }
+        composable(route = Route.APP_WIDGET) {
+            AppWidgetPage(navHostController = navController)
         }
     }
 }

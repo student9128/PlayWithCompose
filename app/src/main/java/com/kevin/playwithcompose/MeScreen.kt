@@ -23,13 +23,17 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -61,6 +65,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -79,6 +84,11 @@ fun MeScreen(
     context: Context = LocalContext.current.applicationContext,
     navHostController: NavHostController,
 ) {
+    val dataList = listOf(
+        mapOf("key" to "setting", "title" to "设置", "url" to Route.SETTINGS),
+        mapOf("key" to "openApp", "title" to "打开第三方应用", "url" to Route.OPEN_APP),
+        mapOf("key" to "appWidget", "title" to "小组件", "url" to Route.APP_WIDGET),
+    )
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -131,11 +141,35 @@ fun MeScreen(
                 HeaderView()
 
             }
-            item{
-                Row (modifier = Modifier.fillMaxWidth().clickable {
-                    navHostController.navigate(Route.OPEN_APP)
-                }){
-                    Text(text = "打开第三方应用")
+            items(dataList.size){index->
+                Card(modifier = Modifier
+                    .background(Color.White)
+                    .padding(
+                        start = 16.dp,
+                        top = if (index != 0) 16.dp else 0.dp,
+                        end = 16.dp,
+                        bottom = if (index != dataList.size - 1) 0.dp else 16.dp
+                    )
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .clip(RoundedCornerShape(Dp(16f)))
+                    .clickable {
+                        val routeName = dataList[index]["url"]
+                        routeName?.let {
+                            navHostController.navigate(it)
+                        }
+
+                    },
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFFEF9E1)
+                    ),
+                    shape = RoundedCornerShape(Dp(16f)),) {
+                    Column( modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)) {
+
+                    Text("${dataList[index]["title"]}", color = Color(0xFFFFD95F), fontSize = 16.sp)
+                    }
                 }
             }
             items(count = 100) { index ->

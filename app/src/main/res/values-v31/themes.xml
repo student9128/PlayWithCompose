@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.PlayWithCompose" parent="android:Theme.Material.Light.NoActionBar" >
+    <style name="Theme.PlayWithCompose" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/immersive_sys_ui</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
     <style name="Theme.PostSplashScreen" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:windowBackground">@drawable/ic_splash</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-<!--        <item name="android:windowFullscreen">true</item>-->
+        <!--        <item name="android:windowFullscreen">true</item>-->
     </style>
+
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <!-- Set the splash screen background to black -->
         <item name="windowSplashScreenBackground">@android:color/transparent</item>
@@ -22,4 +24,6 @@
         <item name="windowSplashScreenAnimationDuration">0</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
+    <!-- Do not override any color attribute. -->
+    <style name="MyWidgetTheme" parent="Theme.Material3.DynamicColors.DayNight" />
 </resources>

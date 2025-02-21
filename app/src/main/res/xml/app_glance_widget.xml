@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="80dp"
+    android:minHeight="80dp"
+    android:minResizeWidth="40dp"
+    android:minResizeHeight="40dp"
+    android:description="@string/widget_description_glance"
+    android:previewImage="@mipmap/ic_launcher_orange"
+    android:initialLayout="@layout/layout_glance_widget"
+    android:resizeMode="horizontal|vertical"/>

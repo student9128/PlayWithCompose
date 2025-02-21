@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<!--    <style name="Theme.PlayWithCompose" parent="android:Theme.Material.Light.NoActionBar" >-->
-<!--        <item name="android:statusBarColor">@color/immersive_sys_ui</item>-->
-<!--        <item name="android:windowLightStatusBar">true</item>-->
-<!--    </style>-->
+    <!--    <style name="Theme.PlayWithCompose" parent="android:Theme.Material.Light.NoActionBar" >-->
+    <!--        <item name="android:statusBarColor">@color/immersive_sys_ui</item>-->
+    <!--        <item name="android:windowLightStatusBar">true</item>-->
+    <!--    </style>-->
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <!-- Set the splash screen background to black -->
         <item name="windowSplashScreenBackground">@android:color/transparent</item>
@@ -15,5 +15,13 @@
         <item name="postSplashScreenTheme">@style/Theme.PlayWithCompose</item>
         <item name="windowSplashScreenAnimationDuration">10</item>
         <item name="android:windowBackground">@drawable/ic_splash</item>
+    </style>
+
+    <style name="MyWidgetTheme" parent="Theme.Material3.DynamicColors.DayNight">
+        <!-- Override default colorBackground attribute with custom color. -->
+        <item name="android:colorBackground">@color/widget_background</item>
+
+        <!-- Add other colors/attributes. -->
+
     </style>
 </resources>

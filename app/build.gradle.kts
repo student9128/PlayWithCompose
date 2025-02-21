@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.kevin.playwithcompose"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.kevin.playwithcompose"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -83,4 +83,8 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+    implementation(libs.material3.android)
+    implementation("androidx.glance:glance-appwidget:1.1.0")
+    implementation("androidx.glance:glance-material3:1.1.0")
+
 }

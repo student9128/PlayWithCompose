@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PlayWithCompose</string>
+    <string name="widget_description">Play App Widget</string>
+    <string name="widget_description_glance">Play App Widget with Glance</string>
 </resources>
